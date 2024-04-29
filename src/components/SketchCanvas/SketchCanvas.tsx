@@ -161,27 +161,29 @@ export const SketchCanvas = forwardRef<SketchCanvasRef, SketchCanvasProps>(
       [strokeColor, strokeStyle]
     );
 
+    const completedPaths = useMemo(() => {
+      return pathsSnapshot.completed.map((path) => (
+        <Path
+          path={path.path}
+          key={path.id}
+          style={path.style}
+          color={path.color}
+        />
+      ))
+    }, [pathsSnapshot.completed]);
+
     return (
       <Canvas ref={canvasRef} onTouch={touchHandler} style={containerStyle}>
         {bottomChildren}
         {children}
-        {pathsSnapshot.completed.map((path) => (
-          <Path
-            path={path.path}
-            key={path.id}
-            style={path.style}
-            color={path.color}
-          />
-        ))}
+        {completedPaths}
         {pathsSnapshot.current ? (
           <Path
             path={pathsSnapshot.current}
             color={strokeColor}
             style={strokeStyle}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
         {topChildren}
       </Canvas>
     );
